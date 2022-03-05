@@ -1,0 +1,33 @@
+#include "ItemDelegate.h"
+#include <QPainter>
+#include <QStyleOptionViewItem>
+#include <QModelIndex>
+#include <QRect>
+#include <QImage>
+
+ItemDelegate::ItemDelegate(QObject* parent)
+    :
+    QItemDelegate{ parent }
+{
+}
+
+void ItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+{
+    QItemDelegate::paint(painter, option, index);
+    if(index.isValid())
+    {
+        painter->save();
+        
+        painter->drawImage();
+        
+        painter->drawImage(option.rect, index.data(Icon).value<QImage>());
+        if(!index.data(Spawner).toBool())
+        {
+            auto rect = option.rect;
+            rect -= {2, 2, 2, 0};
+            painter->drawText(rect, Qt::AlignRight | Qt::AlignBottom, index.data(Number).toString());
+        }
+
+        painter->restore();
+    }
+}
